@@ -93,11 +93,13 @@ else
   sed -i "s/your.docroot.project/${PROJECT_NAME}/g" ${WORK_DIR}/conf/apache/virtualhost.conf
 fi
 
-
+# Change alias_url in /etc/hosts.
+sudo bash -c "echo 127.0.0.1 ${PROJECT_NAME}.vm >> /etc/hosts"
 
 printf "${GREEN}Environment configured...${NC}\n"
 printf "  Virtualhost configuration...\n"
 printf "   * Domain configured as ${PURPLE}https://${PROJECT_NAME}.vm${NC}\n"
+printf "  /etc/hosts configuration...\n"
 if [ ${WEBSERVER_ENGINE} == 'nginx' ]
 then
   printf "   * Document root configured in ${PURPLE}/usr/share/nginx/html/${PROJECT_NAME}/web${NC}\n"
