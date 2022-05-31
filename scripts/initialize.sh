@@ -6,14 +6,20 @@ BLUE='\033[1;34m'
 YELLOW='\033[1;33m'
 PURPLE='\033[0;35m'
 
+# The following variable is used from other script "create-docker-project.sh". This scripts runs intialize.sh passing the PROJECT_NAME variable.
+# Please see create-docker-project.sh here: https://github.com/albertoperezdosaula/scripts/blob/main/create-docker-project.sh
+PROJECT_NAME_VAR = $1
+
 #Get script folder
 WORK_DIR=$( cd "$( dirname "$0" )" && pwd )/..
 
 echo "Welcome to easy-docker-drupal configuration:"
 echo "--------------------------------------------"
 
-printf "Please, input the name of the project (without spaces): "
-read PROJECT_NAME
+if [[ "${PROJECT_NAME_VAR}" == "" ]]; then
+  printf "Please, input the name of the project (without spaces): "
+  read PROJECT_NAME
+fi
 
 printf "Please, select database storage (mariadb/postgres) [mariadb]: "
 read input_db
