@@ -13,8 +13,10 @@ PROJECT_NAME_VAR = $1
 #Get script folder
 WORK_DIR=$( cd "$( dirname "$0" )" && pwd )/..
 
-echo "Welcome to easy-docker-drupal configuration:"
-echo "--------------------------------------------"
+echo -e "${YELLOW}#########################################################################################${NC}\r"
+echo -e "${YELLOW}############################### EASY DOCKER CONFIGURATION ###############################${NC}\r"
+echo -e "${YELLOW}#########################################################################################${NC}\r"
+printf '\n'
 
 if [[ "${PROJECT_NAME_VAR}" == "" ]]; then
   printf "Please, input the name of the project (without spaces): "
@@ -47,7 +49,6 @@ printf "Launch docker (yes/no) [yes]: "
 read input_ld
 LAUNCH_DOCKER=${input_ld:=yes}
 
-
 cat scripts/templates-dc/edd-dc.yml > docker-compose.yml
 cat scripts/templates-dc/edd-dc-${DATABASE_ENGINE}.yml >> docker-compose.yml
 cat scripts/templates-dc/edd-dc-${WEBSERVER_ENGINE}.yml >> docker-compose.yml
@@ -66,6 +67,11 @@ fi
 printf "${GREEN}Configuring environment...${NC}\n"
 printf "  Modifying environment name...${NC}\n"
 sed -i "s/PROJECT_NAME=vm/PROJECT_NAME=${PROJECT_NAME}/g" ${WORK_DIR}/.env
+
+echo -e "${YELLOW}#########################################################################################${NC}\r"
+echo -e "${YELLOW}################################### SSH CONFIGURATION ###################################${NC}\r"
+echo -e "${YELLOW}#########################################################################################${NC}\r"
+printf '\n'
 
 #Check if exists certificates to generate certificates for environment
 FILE=~/.ssh/id_rsa
@@ -88,7 +94,11 @@ openssl req -x509 -new -newkey rsa:4096 -nodes -days 2048 \
     -keyout ${WORK_DIR}/conf/ssl/localhost.key -out ${WORK_DIR}/conf/ssl/localhost.crt \
     -subj "/C=ES/O=DEX/OU=CEPPHP/CN=${PROJECT_NAME}.vm" > /dev/null 2>&1
 
-#Configure VirtualHost
+echo -e "${YELLOW}#########################################################################################${NC}\r"
+echo -e "${YELLOW}############################### VIRTUALHOST CONFIGURATION ###############################${NC}\r"
+echo -e "${YELLOW}#########################################################################################${NC}\r"
+printf '\n'
+
 printf "  Modifying Virtualhost...${NC}\n"
 if [ ${WEBSERVER_ENGINE} == 'nginx' ]
 then
