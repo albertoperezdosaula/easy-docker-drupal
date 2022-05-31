@@ -10,8 +10,12 @@ PURPLE='\033[0;35m'
 # Please see create-docker-project.sh here: https://github.com/albertoperezdosaula/scripts/blob/main/create-docker-project.sh
 PROJECT_NAME_VAR=$1
 
-#Get script folder
-WORK_DIR=$( cd "$( dirname "$0" )" && pwd )/..
+#Get script folder depends if this script is runned from create-docker-project.sh or not.
+if [[ ! "${PROJECT_NAME_VAR}" == "" ]]; then
+  WORK_DIR=$( cd "$( dirname "$0" )" && pwd )
+else
+  WORK_DIR=$( cd "$( dirname "$0" )" && pwd )/..
+fi
 
 echo -e "${YELLOW}#########################################################################################${NC}\r"
 echo -e "${YELLOW}############################### EASY DOCKER CONFIGURATION ###############################${NC}\r"
@@ -115,7 +119,7 @@ sudo bash -c "echo 127.0.0.1 ${PROJECT_NAME}.vm >> /etc/hosts"
 printf "${GREEN}Environment configured...${NC}\n"
 printf "  Virtualhost configuration...\n"
 printf "   * Domain configured as ${PURPLE}https://${PROJECT_NAME}.vm${NC}\n"
-printf "  /etc/hosts configuration...\n"
+printf "   * Adding domain to ${PURPLE}/etc/hosts${NC}\n"
 if [ ${WEBSERVER_ENGINE} == 'nginx' ]
 then
   printf "   * Document root configured in ${PURPLE}/usr/share/nginx/html/${PROJECT_NAME}/web${NC}\n"
