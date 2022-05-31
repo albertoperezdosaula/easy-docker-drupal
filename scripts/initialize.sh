@@ -8,7 +8,7 @@ PURPLE='\033[0;35m'
 
 # The following variable is used from other script "create-docker-project.sh". This scripts runs intialize.sh passing the PROJECT_NAME variable.
 # Please see create-docker-project.sh here: https://github.com/albertoperezdosaula/scripts/blob/main/create-docker-project.sh
-PROJECT_NAME_VAR = $1
+PROJECT_NAME_VAR=$1
 
 #Get script folder
 WORK_DIR=$( cd "$( dirname "$0" )" && pwd )/..
