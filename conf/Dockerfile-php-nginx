@@ -18,12 +18,29 @@ RUN apt-get update -y; \
 RUN apt-get update -y; \
   apt-get install -y net-tools \
             git \
+            locate \
             unzip \
             vim \
             htop \
             wget \
             mariadb-client \
-            awscli
+            awscli \
+            libxslt1-dev
+
+# **********************************************************
+# ***** PHPCS - CODERSNIFFER *******************************
+# **********************************************************
+ENV COMPOSER_HOME=/usr/local/composer
+RUN curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar -o /usr/local/bin/phpcs && chmod +x /usr/local/bin/phpcs
+RUN curl -L https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar -o /usr/local/bin/phpcbf && chmod +x /usr/local/bin/phpcbf
+RUN composer global require consolidation/cgr
+RUN $COMPOSER_HOME/vendor/bin/cgr drupal/coder
+RUN $COMPOSER_HOME/vendor/bin/cgr dealerdirect/phpcodesniffer-composer-installer
+RUN $COMPOSER_HOME/vendor/bin/cgr sirbrillig/phpcs-variable-analysis
+RUN phpcs --config-set installed_paths $COMPOSER_HOME/global/drupal/coder/vendor/drupal/coder/coder_sniffer,$COMPOSER_HOME/global/drupal/coder/vendor/sirbrillig/phpcs-variable-analysis,$COMPOSER_HOME/global/drupal/coder/vendor/slevomat/coding-standard
+RUN chmod 666 /usr/local/bin/CodeSniffer.conf
+RUN chmod -R ugo+rw $COMPOSER_HOME
+ENV COMPOSER_HOME=""
 
 # Install composer, drush launcher, drush extensions, drupal console
 #--------------------------------------------------------------------
@@ -76,6 +93,10 @@ RUN docker-php-ext-install opcache && \
 #    apt-get install libldap2-dev -y && \
 #    docker-php-ext-configure ldap && \
 #    docker-php-ext-install ldap
+
+##Installing Ext php module
+RUN  docker-php-ext-install xsl && \
+     docker-php-ext-enable xsl
 
 # **********************************************************
 # ***** DEVELOPMENT PURPOSES *******************************
