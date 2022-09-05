@@ -18,6 +18,7 @@ RUN apt-get update -y; \
 RUN apt-get update -y; \
   apt-get install -y net-tools \
             git \
+            jq \
             locate \
             unzip \
             vim \
@@ -93,6 +94,23 @@ RUN docker-php-ext-install opcache && \
 #    apt-get install libldap2-dev -y && \
 #    docker-php-ext-configure ldap && \
 #    docker-php-ext-install ldap
+
+##Installing Copy&Paste tool.
+RUN \
+    wget https://phar.phpunit.de/phpcpd.phar && \
+    mv phpcpd.phar /usr/local/bin/phpcpd && \
+    chmod +x /usr/local/bin/phpcpd
+
+##Installing Column tool
+RUN \
+    wget https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.35/util-linux-2.35-rc1.tar.gz && \
+    tar xvf util-linux-2.35-rc1.tar.gz && \
+    cd util-linux-2.35-rc1/ && \
+    ./configure && \
+    make column && \
+    cp .libs/column /usr/local/bin/ && \
+    chmod +x /usr/local/bin/column && \
+    rm -rf util-linux-2.35-rc1*
 
 ##Installing Ext php module
 RUN  docker-php-ext-install xsl && \
