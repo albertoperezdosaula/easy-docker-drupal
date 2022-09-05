@@ -4,7 +4,7 @@
 # To work with PHP8.0 set "FROM drupal:9-apache"
 # To work with PHP7.4 set "FROM drupal:8-apache"
 #
-FROM drupal:9-apache
+FROM drupal:8-apache
 
 ENV DRUSH_LAUNCHER_VER="0.9.0" \
     DRUPAL_CONSOLE_LAUNCHER_VER="1.9.7"
@@ -16,6 +16,7 @@ ENV COMPOSER_VERSION="2"
 RUN apt-get update -y; \
   apt-get install -y net-tools \
             git \
+            jq \
             locate \
             unzip \
             wget \
@@ -50,7 +51,6 @@ RUN chmod 666 /usr/local/bin/CodeSniffer.conf
 RUN chmod -R ugo+rw $COMPOSER_HOME
 ENV COMPOSER_HOME=""
 
-
 # Install composer, drush launcher, drush extensions, drupal console
 RUN set -ex && \
     cd ~ && \
@@ -77,12 +77,30 @@ RUN set -ex && \
     unzip -o /tmp/phpredis.zip && mv /tmp/phpredis-* /tmp/phpredis && cd /tmp/phpredis && phpize && ./configure && make && make install && \
     touch /usr/local/etc/php/conf.d/redis.ini && echo extension=redis.so > /usr/local/etc/php/conf.d/redis.ini
 
+
 ##Installing LDAP php module
 #RUN \
 #    apt-get update && \
 #    apt-get install libldap2-dev -y && \
 #    docker-php-ext-configure ldap && \
 #    docker-php-ext-install ldap
+
+##Installing Copy&Paste tool.
+RUN \
+    wget https://phar.phpunit.de/phpcpd.phar && \
+    mv phpcpd.phar /usr/local/bin/phpcpd && \
+    chmod +x /usr/local/bin/phpcpd
+
+##Installing Column tool
+RUN \
+    wget https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v2.35/util-linux-2.35-rc1.tar.gz && \
+    tar xvf util-linux-2.35-rc1.tar.gz && \
+    cd util-linux-2.35-rc1/ && \
+    ./configure && \
+    make column && \
+    cp .libs/column /usr/local/bin/ && \
+    chmod +x /usr/local/bin/column && \
+    rm -rf util-linux-2.35-rc1*
 
 ##Installing Ext php module
 RUN  docker-php-ext-install xsl && \
